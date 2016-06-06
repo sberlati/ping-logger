@@ -22,7 +22,7 @@ import java.util.Calendar;
  */
 public class IO {
 	//Directorio donde se van a guardar los logs
-	private static final String logDirectory = "C:/pinglogger/";
+	private String logDirectory;
 	
 	//Formato de la fecha. Se aplica al darle nombre al txt
 	private static final String dateDisplay = "dd-MM-yyyy";
@@ -47,16 +47,51 @@ public class IO {
 	 * lo crea. Después, se fija si existe un archivo .txt cuyo
 	 * nombre sea la fecha actual. Si no existe lo crea, caso contrario
 	 * simplemente lo abre.
+	 * 
+	 * Este constructor hace la carpeta de logs en la carpeta donde se 
+	 * ejecuta la aplicación.
 	 */
 	public IO() {
 		//Instanciando los date y time format
 		this.dateFormat = new SimpleDateFormat(dateDisplay);
 		this.timeFormat = new SimpleDateFormat(timeDisplay);
 		this.calendar = Calendar.getInstance();
+		this.logDirectory = System.getProperty("user.dir") + "/logs/";
 		//Fijándome si existe el directorio, y sino lo creo
 		File dir = new File(logDirectory);
 		if(!dir.exists())
 			dir.mkdir();
+		//Me fijo si existe el archivo con la fecha actual y sino lo creo
+		File archivo = new File(logDirectory + this.dateFormat.format(this.calendar.getTime()) + ".txt");
+		if(!archivo.exists())
+			try {
+				archivo.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
+	
+	/**
+	 * Es el mismo constructor pero recibe una URL donde se van a almacenar los
+	 * logs. En caso de no existir, voy a hacer lo mismo que el otro constructor.
+	 * 
+	 * @param logsURL	La dirección en donde se van a guardar los logs de conexión
+	 */
+	public IO(String logsURL) {
+		//Instanciando los date y time format
+		this.dateFormat = new SimpleDateFormat(dateDisplay);
+		this.timeFormat = new SimpleDateFormat(timeDisplay);
+		this.calendar = Calendar.getInstance();
+		this.logDirectory = logsURL;
+		//Fijándome si existe el directorio, y sino voy al otro constructor
+		File dir = new File(logDirectory);
+		if(!dir.exists()) {
+			System.out.println("El directorio no existe. Usando el directorio de ejecución.");
+			this.logDirectory = System.getProperty("user.dir") + "/logs/";
+			dir = new File(logDirectory);
+			if(!dir.exists())
+				dir.mkdir();
+		}
 		//Me fijo si existe el archivo con la fecha actual y sino lo creo
 		File archivo = new File(logDirectory + this.dateFormat.format(this.calendar.getTime()) + ".txt");
 		if(!archivo.exists())

@@ -22,10 +22,18 @@ public class Pinger {
 	private IO io;
 	
 	/**
-	 * Constructor de la clase
+	 * Constructor de la clase sin URL donde almacenar los logs
 	 */
 	public Pinger() {
 		this.io = new IO();
+		this.start();
+	}
+	
+	/**
+	 * Constructor de la clase CON URL de logs
+	 */
+	public Pinger(String logsUrl) {
+		this.io = new IO(logsUrl);
 		this.start();
 	}
 	
